@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
-
+import { FiTrash2 } from 'react-icons/fi';
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
 import total from '../../assets/total.svg';
@@ -11,7 +11,13 @@ import Header from '../../components/Header';
 
 import formatValue from '../../utils/formatValue';
 
-import { Container, CardContainer, Card, TableContainer } from './styles';
+import {
+  Container,
+  CardContainer,
+  Card,
+  TableContainer,
+  Touchable,
+} from './styles';
 
 interface Transaction {
   id: string;
@@ -66,7 +72,17 @@ const Dashboard: React.FC = () => {
     }
 
     loadTransactions();
-  }, []);
+  }, [transactions]);
+
+  async function handleDeleteTransaction(id: string): Promise<void> {
+    await api.delete(`/transactions/${id}`);
+
+    const oldTransactions = [...transactions];
+    const filteredTransactions = oldTransactions.filter(
+      transaction => transaction.id !== id,
+    );
+    setTransactions(filteredTransactions);
+  }
 
   return (
     <>
@@ -121,6 +137,13 @@ const Dashboard: React.FC = () => {
                   </td>
                   <td>{transaction.category.title}</td>
                   <td>{transaction.formattedDate}</td>
+                  <td>
+                    <Touchable
+                      onClick={() => handleDeleteTransaction(transaction.id)}
+                    >
+                      <FiTrash2 size={30} color="#c03030" />
+                    </Touchable>
+                  </td>
                 </tr>
               ))}
             </tbody>

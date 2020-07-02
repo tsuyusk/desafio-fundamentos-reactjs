@@ -93,3 +93,7 @@ export const TableContainer = styled.section`
     }
   }
 `;
+
+export const Touchable = styled.div`
+  cursor: pointer;
+`;
